@@ -1,0 +1,197 @@
+{% extends "inventario/comun/base.html" %}
+
+{% block content %}
+<article class="content forms-page">
+    <div class="title-block">
+        <h3 class="title">Emitir factura</h3>
+        <p class="title-description">Introduzca la cédula y seleccione los productos para generar la factura</p>
+    </div>
+
+    <section class="section">
+        <div class="row sameheight-container">
+            <div class="col-md-12">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <div class="header-block">
+                                    <em class="fa fa-check"></em>
+                                    <p class="title">{{ message }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="card card-block sameheight-item">
+                    <form role="form" method="POST" onsubmit="return validarTodo('factura')">
+                        {% csrf_token %}
+                        <!-- Fechas de Emisión y Vencimiento -->
+                        <div class="form-group">
+                            <label for="fecha_emision">{{ form.fecha_emision.label }}</label>
+                            {{ form.fecha_emision }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fecha_vencimiento">{{ form.fecha_vencimiento.label }}</label>
+                            {{ form.fecha_vencimiento }}
+                        </div>
+                           <!-- Serie -->
+                        <div class="form-group">
+                            <label for="serie">Serie:</label>
+                            <div class="d-flex">
+                                <input type="text" id="serie1" name="serie1" class="form-control mr-2"
+                                       maxlength="3" placeholder="001">
+                                <input type="text" id="serie2" name="serie2" class="form-control mr-2"
+                                       maxlength="3" placeholder="901">
+                            </div>
+                        </div>
+
+                        <!-- Secuencia -->
+                        <div class="form-group">
+                            <label for="secuencia">Secuencia:</label>
+                            <input type="text" id="secuencia" name="secuencia" class="form-control"
+                                   maxlength="9" placeholder="000000949">
+                        </div>
+
+                        <!-- CI/RUC del Cliente -->
+                        <div class="form-group">
+                            <label for="identificacion_cliente">CI/RUC:</label>
+                            <div class="d-flex">
+                                <input type="text" id="identificacion_cliente" name="identificacion_cliente"
+                                       class="form-control mr-2" placeholder="Ingrese la cédula del cliente">
+                                <button type="button" class="btn btn-secondary" onclick="buscarCliente()">Buscar</button>
+                            </div>
+                        </div>
+
+                        <!-- Nombre del Cliente -->
+                        <div class="form-group">
+                            <label for="nombre_cliente">Nombre del Cliente</label>
+                            <input type="text" id="nombre_cliente" name="nombre_cliente"
+                                   class="form-control" placeholder="Nombre del cliente" disabled>
+                        </div>
+                         <!-- Concepto -->
+                        <div class="form-group">
+                            <label for="concepto">{{ form.concepto.label }}</label>
+                            {{ form.concepto }}
+                        </div>
+
+                        <!-- Código del Producto y botón Agregar -->
+                        <div class="form-group">
+                            <label for="codigo_producto">Código del Producto:</label>
+                            <div class="d-flex">
+                                <input type="text" id="codigo_producto" name="codigo_producto"
+                                       class="form-control mr-2" placeholder="Ingrese el código del producto">
+                                <button type="button" class="btn btn-secondary" onclick="buscarProducto()">Buscar</button>
+                                <button type="button" class="btn btn-success ml-2" onclick="agregarProducto()">Agregar</button>
+                            </div>
+                        </div>
+
+                        <!-- Producto -->
+                        <div class="form-group">
+                            <label for="producto">Producto</label>
+                            <input type="text" id="producto" name="producto"
+                                   class="form-control" placeholder="Nombre del producto" disabled>
+                        </div>
+
+                        <!-- Tabla de productos añadidos -->
+                        <div class="form-group">
+                            <table class="table table-striped" id="tabla-productos">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Subtotal</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+
+                       
+
+                     
+                        
+
+                        <!-- Botón para enviar -->
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Ingresar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</article>
+
+<script>
+    function buscarCliente() {
+        const cedula = document.getElementById('identificacion_cliente').value;
+        fetch(`/inventario/buscar_cliente/?q=${cedula}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    document.getElementById('nombre_cliente').value = data[0].nombre;
+                } else {
+                    alert('Cliente no encontrado.');
+                    document.getElementById('nombre_cliente').value = '';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function buscarProducto() {
+        const codigo = document.getElementById('codigo_producto').value;
+        fetch(`/inventario/buscar_producto/?q=${codigo}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    document.getElementById('producto').value = data[0].nombre;
+                } else {
+                    alert('Producto no encontrado.');
+                    document.getElementById('producto').value = '';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function agregarProducto() {
+        const codigo = document.getElementById('codigo_producto').value;
+        const producto = document.getElementById('producto').value;
+
+        if (!codigo || !producto) {
+            alert('Debe ingresar un código de producto válido y buscarlo antes de agregar.');
+            return;
+        }
+
+        const cantidad = prompt('Ingrese la cantidad:', '1');
+        if (!cantidad || isNaN(cantidad) || cantidad <= 0) {
+            alert('Ingrese una cantidad válida.');
+            return;
+        }
+
+        const subtotal = (cantidad * 10).toFixed(2); // Ejemplo de cálculo de subtotal
+        const tabla = document.getElementById('tabla-productos').getElementsByTagName('tbody')[0];
+        const fila = tabla.insertRow();
+
+        fila.innerHTML = `
+            <td>${codigo}</td>
+            <td>${producto}</td>
+            <td>${cantidad}</td>
+            <td>${subtotal}</td>
+            <td><button class="btn btn-danger" onclick="eliminarFila(this)">Eliminar</button></td>
+        `;
+
+        document.getElementById('codigo_producto').value = '';
+        document.getElementById('producto').value = '';
+    }
+
+    function eliminarFila(boton) {
+        const fila = boton.parentElement.parentElement;
+        fila.remove();
+    }
+</script>
+{% endblock %}

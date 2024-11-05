@@ -1,0 +1,130 @@
+                <!-- MODAL DE ARCHIVOS -->
+
+                <div class="modal fade" id="modal-media">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Media Library</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    <span class="sr-only">Close</span>
+                                </button>
+                            </div>
+                            <div class="modal-body modal-tab-container">
+                                <ul class="nav nav-tabs modal-tabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#gallery" data-toggle="tab" role="tab">Gallery</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="#upload" data-toggle="tab" role="tab">Upload</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content modal-tab-content">
+                                    <div class="tab-pane fade" id="gallery" role="tabpanel">
+                                        <div class="images-container">
+                                            <div class="row"> </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade active in" id="upload" role="tabpanel">
+                                        <div class="upload-container">
+                                            <div id="dropzone">
+                                                <form action="/" method="POST" enctype="multipart/form-data" class="dropzone needsclick dz-clickable" id="demo-upload">
+                                                    <div class="dz-message-block">
+                                                        <div class="dz-message needsclick"> Drop files here or click to upload. </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Insert Selected</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+
+
+
+
+                <!-- MODAL DE CONFIRMACION -->
+
+                <div class="modal fade" id="confirm-modal">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">
+                                    <i class="fa fa-warning"></i> Atencion</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Esta seguro que desea eliminar esta entrada? Una vez borrada no se podra recuperar!</p>
+                            </div>
+                            <div class="modal-footer">
+                                <a type="button" class="btn btn-primary" id="modal_borrar" href="#">Si,borrar</a>
+                                <a type="button" class="btn btn-secondary" data-dismiss="modal">No, cambie de opinion</a>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+
+<!-- FIN DE MODAL -->
+                <!-- Modal para autenticar al facturador -->
+<!-- Modal para autenticar al facturador -->
+<div class="modal fade" id="loginFacturadorModal" tabindex="-1" role="dialog" aria-labelledby="loginFacturadorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginFacturadorModalLabel">Autenticación de Facturador</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="loginFacturadorForm" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="password">Contraseña:</label>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Ingrese su contraseña" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary" form="loginFacturadorForm">Continuar</button>
+            </div>
+        </div>
+    </div>
+</div>
+                <script>
+    document.getElementById('loginFacturadorForm').onsubmit = function (event) {
+        event.preventDefault();  // Prevenir la recarga de la página
+
+        fetch("{% url 'inventario:login_facturador' %}", {
+            method: "POST",
+            body: new FormData(this),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(response => response.json()).then(data => {
+            if (data.success) {
+                // Redirige a la página de emisión de factura si es exitoso
+                window.location.href = "{% url 'inventario:emitirFactura' %}";
+            } else {
+                // Muestra un mensaje de error si no se encuentra el facturador
+                alert(data.error);
+            }
+        }).catch(error => console.error('Error:', error));
+    };
+</script>
+

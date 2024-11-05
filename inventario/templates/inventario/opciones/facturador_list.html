@@ -1,0 +1,51 @@
+{% extends "inventario/comun/base.html" %}
+
+{% block content %}
+<article class="content forms-page">
+    <div class="title-block">
+        <h3 class="title"> Listado de Facturadores </h3>
+        <p class="title-description"> Visualiza todos los facturadores registrados </p>
+    </div>
+
+    <section class="section">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombres</th>
+                        <th>Teléfono</th>
+                        <th>Correo</th>
+                        <th>Descuento Permitido</th>
+                        <th>Activo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for facturador in facturadores %}
+                    <tr>
+                        <td>{{ facturador.id }}</td>
+                        <td>{{ facturador.nombres }}</td>
+                        <td>{{ facturador.telefono }}</td>
+                        <td>{{ facturador.correo }}</td>
+                        <td>{{ facturador.descuento_permitido }}%</td>
+                        <td>
+                            <input type="checkbox" {% if facturador.activo %}checked{% endif %} disabled>
+                        </td>
+                        <td>
+                            <a href="{% url 'inventario:editar_facturador' facturador.id %}" class="btn btn-warning btn-sm">Editar</a>
+                            <a href="{% url 'inventario:eliminar_facturador' facturador.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">No hay facturadores registrados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <a href="{% url 'inventario:crear_facturador' %}" class="btn btn-primary mt-3">Agregar Nuevo Facturador</a>
+    </section>
+</article>
+{% endblock %}

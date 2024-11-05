@@ -1,0 +1,167 @@
+<aside class="sidebar">
+    <div class="sidebar-container">
+        <div class="sidebar-header">
+            <div class="brand">
+                <div class="logo-nuevo">
+                    {% load static %}
+                    <img id="logo-endogeno" src="{% static 'inventario/assets/logo/loguito.png' %}" alt="Logo">
+                </div>
+                Administrador
+            </div>
+        </div>
+
+        <nav class="menu">
+            <ul class="sidebar-menu metismenu" id="sidebar-menu">
+                <li>
+                    <a href="/inventario/panel">
+                        <i class="fa fa-home"></i> Inicio
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <i class="fa fa-shopping-basket"></i> Producto <i class="fa arrow"></i>
+                    </a>
+                    <ul class="sidebar-nav">
+                        <li><a href="/inventario/listarProductos"><i class="fa fa-ellipsis-h"></i> Listar productos</a></li>
+                        <li><a href="/inventario/agregarProducto"><i class="fa fa-plus"></i> Agregar producto</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <i class="fa fa-book"></i> Proveedor <i class="fa arrow"></i>
+                    </a>
+                    <ul class="sidebar-nav">
+                        <li><a href="/inventario/listarProveedores"><i class="fa fa-ellipsis-h"></i> Listar proveedores</a></li>
+                        <li><a href="/inventario/agregarProveedor"><i class="fa fa-plus"></i> Agregar proveedor</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <i class="fa fa-gift"></i> Pedido <i class="fa arrow"></i>
+                    </a>
+                    <ul class="sidebar-nav">
+                        <li><a href="/inventario/listarPedidos"><i class="fa fa-ellipsis-h"></i> Listar pedidos</a></li>
+                        <li><a href="/inventario/agregarPedido"><i class="fa fa-plus"></i> Añadir pedido</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <i class="fa fa-handshake-o"></i> Clientes <i class="fa arrow"></i>
+                    </a>
+                    <ul class="sidebar-nav">
+                        <li><a href="/inventario/listarClientes"><i class="fa fa-ellipsis-h"></i> Listar clientes</a></li>
+                        <li><a href="/inventario/agregarCliente"><i class="fa fa-plus"></i> Agregar cliente</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <i class="fa fa-ticket"></i> Factura <i class="fa arrow"></i>
+                    </a>
+                    <ul class="sidebar-nav">
+                        <li><a href="/inventario/listarFacturas"><i class="fa fa-ellipsis-h"></i> Listar facturas</a></li>
+                        <li>
+                            <a href="#" onclick="abrirModalFacturador()">
+                                <i class="fa fa-money"></i> Emitir factura
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <i class="fa fa-id-card"></i> Facturadores <i class="fa arrow"></i>
+                    </a>
+                    <ul class="sidebar-nav">
+                        <li><a href="/inventario/facturadores/"><i class="fa fa-ellipsis-h"></i> Listar facturadores</a></li>
+                        <li><a href="/inventario/facturadores/crear/"><i class="fa fa-plus"></i> Crear facturador</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <i class="fa fa-users"></i> Usuarios <i class="fa arrow"></i>
+                    </a>
+                    <ul class="sidebar-nav">
+                        <li><a href="/inventario/crearUsuario"><i class="fa fa-circle-o"></i> Crear usuario</a></li>
+                        <li><a href="/inventario/listarUsuarios"><i class="fa fa-circle-o"></i> Listar usuarios</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <i class="fa fa-cog"></i> Opciones <i class="fa arrow"></i>
+                    </a>
+                    <ul class="sidebar-nav">
+                        <li><a href="/inventario/importarBDD"><i class="fa fa-file-o"></i> Importar base de datos</a></li>
+                        <li><a href="/inventario/descargarBDD"><i class="fa fa-download"></i> Descargar base de datos</a></li>
+                        <li><a href="/inventario/configuracionGeneral"><i class="fa fa-gear"></i> Configuración general</a></li>
+                        <li><a href="/inventario/ListaSecuencias/"><i class="fa fa-list-ol"></i> Secuencias</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="/inventario/chatIA">
+                        <i class="fa fa-circle-o"></i> Chat con IA
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</aside>
+
+<!-- Modal de autenticación del facturador -->
+<div class="modal fade" id="loginFacturadorModal" tabindex="-1" role="dialog" aria-labelledby="loginFacturadorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginFacturadorModalLabel">Autenticación de Facturador</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="loginFacturadorForm" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="password">Contraseña:</label>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Ingrese su contraseña" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary" form="loginFacturadorForm">Continuar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para abrir el modal y manejar la autenticación -->
+<script>
+    function abrirModalFacturador() {
+        $('#loginFacturadorModal').modal('show');
+    }
+
+    document.getElementById('loginFacturadorForm').onsubmit = function(event) {
+        event.preventDefault();  // Prevenir la recarga de la página
+
+        fetch("{% url 'inventario:login_facturador' %}", {
+            method: "POST",
+            body: new FormData(this),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(response => response.json()).then(data => {
+            if (data.success) {
+                window.location.href = "{% url 'inventario:emitirFactura' %}";
+            } else {
+                alert(data.error);
+            }
+        }).catch(error => console.error('Error:', error));
+    };
+</script>

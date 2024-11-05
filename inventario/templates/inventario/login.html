@@ -1,0 +1,77 @@
+<!doctype html>
+<html class="no-js" lang="en">
+{% include "inventario/comun/estilos.html" %}
+    <body>
+        <div class="auth">
+            <div class="auth-container">
+                <div class="card">
+                    <header class="auth-header">
+                        <h1 class="auth-title">
+                        {% load static %} 
+                        <div class="logo-nuevo">
+                        <img id="logo-endogeno2" src="{% static 'inventario/assets/logo/logo2.png' %}">
+                        </div>
+                       </h1>
+                    </header>
+                    <div class="auth-content">
+                        <p class="text-center">Inicie sesión para continuar</p>
+                        <form id="login-form" method="POST" novalidate="">
+                            <div class="form-group">
+                                {% csrf_token %}
+                                <label for="{{ form.username.id_for_label }}">Identificación:</label>
+                                {{ form.username }}
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.password.id_for_label }}">Contraseña:</label>
+                                {{ form.password }}
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="remember">
+                                    <input class="checkbox" id="remember" type="checkbox">
+                                    <span>Recordarme</span>
+                                </label>
+                                <a href="/reiniciarClave" class="forgot-btn pull-right">¿Olvidaste la contraseña?</a>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-block btn-primary">Iniciar sesión</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Reference block for JS -->
+        <div class="ref" id="ref">
+            <div class="color-primary"></div>
+            <div class="chart">
+                <div class="color-primary"></div>
+                <div class="color-secondary"></div>
+            </div>
+        </div>
+
+{% include "inventario/comun/scripts.html" %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var userInput = document.getElementById('user');
+        userInput.addEventListener('keypress', function(event) {
+            if (!/\d/.test(event.key)) {
+                event.preventDefault();
+            }
+        });
+
+        userInput.addEventListener('paste', function(event) {
+            var paste = (event.clipboardData || window.clipboardData).getData('text');
+            if (!/^\d+$/.test(paste)) {
+                event.preventDefault();
+            }
+        });
+
+        userInput.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+        });
+    });
+</script>
+    </body>
+</html>
